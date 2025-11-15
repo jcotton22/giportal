@@ -1,0 +1,198 @@
+/* === Layout for the Unknowns page === */
+.unknowns-container {
+    max-width: 1200px;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* In case of the typo in your JSX: <div className="uknowns-filter"> */
+.uknowns-filter,
+.unknowns-filter {
+    /* Nothing special needed here yet; kept for clarity/override */
+}
+
+/* Stack columns on small screens */
+@media (max-width: 768px) {
+    .unknowns-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === Filter panel card === */
+.unknown-cases-filter {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 4.5rem; /* sits under your navbar */
+}
+
+.unknown-cases-filter h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* === Accordion wrapper for the selects === */
+.acc {
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fafafa;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Remove default triangle marker on summary */
+.acc__summary {
+    list-style: none;
+    cursor: default;
+}
+
+.acc__summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Arrange the react-select dropdowns vertically with spacing */
+.acc__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* React-Select outer divs inside summary (basic styling only) */
+.acc__summary > div {
+    font-size: 0.9rem;
+}
+
+/* === Filter buttons row === */
+.unknown-filter-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 0.75rem;
+}
+
+.unknown-filter-buttons button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.45rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+}
+
+/* Primary (Filter) */
+.unknown-filter-buttons button[type="submit"] {
+    background: #0056b3;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 86, 179, 0.35);
+}
+
+.unknown-filter-buttons button[type="submit"]:hover {
+    background: #004091;
+    transform: translateY(-1px);
+}
+
+/* Secondary (Reset) */
+.unknown-filter-buttons button[type="reset"] {
+    background: #f3f3f3;
+    color: #444;
+}
+
+.unknown-filter-buttons button[type="reset"]:hover {
+    background: #e4e4e4;
+}
+
+/* === Cases list / grid === */
+.unknowns-case-list {
+    min-height: 200px;
+}
+
+/* Messages (Loading, No modules, etc.) */
+.unknowns-case-list p {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+}
+
+/* Responsive grid: 1 → 2 → 3 per row */
+.unknown-case-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+/* 2 cards per row on medium screens */
+@media (min-width: 700px) {
+    .unknown-case-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* 3 cards per row on larger screens (max) */
+@media (min-width: 1024px) {
+    .unknown-case-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* === Individual module card === */
+.module-entry {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.module-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Clickable image area */
+.module-link {
+    display: block;
+    overflow: hidden;
+}
+
+/* Thumbnail image */
+.module-link img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Placeholder when no image */
+.placeholder-image {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #edf1f7;
+    color: #7a7a7a;
+    font-size: 0.9rem;
+}
+
+/* Text rows under the image */
+.module-entry-row {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.module-entry-row:first-of-type {
+    margin-top: 0.25rem;
+}

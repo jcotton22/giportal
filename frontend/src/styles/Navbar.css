@@ -1,0 +1,35 @@
+/* Sticky navbar container */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+    padding: 0.75rem 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* Turn UL into a horizontal flex row */
+.navbar ul {
+    list-style: none;      /* removes bullet points */
+    margin: 0;
+    padding: 0;
+    display: flex;         /* makes items horizontal */
+    gap: 1.5rem;           /* spacing between items */
+    align-items: center;
+}
+
+/* Link styling */
+.navbar a {
+    text-decoration: none;
+    color: #222;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Hover effect */
+.navbar a:hover {
+    background: #eaeaea;
+    color: #000;
+}

@@ -1,0 +1,107 @@
+/* === Page container: center card vertically === */
+.login-container {
+  min-height: calc(100vh - 80px); /* leave room for navbar */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #f5f7fb 0%, #eef1f7 40%, #ffffff 100%);
+}
+
+/* Card */
+.login-container > div,
+.login-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.75rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Use this if you wrap inner content in a .login-card div */
+.login-container h3 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Form layout */
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* Inputs */
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #d0d5e4;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  background: #f9fafc;
+}
+
+.login-container input[type="email"]:focus,
+.login-container input[type="password"]:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.15);
+  background: #ffffff;
+}
+
+/* Button */
+.login-container button {
+  margin-top: 0.25rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #0056b3;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 3px 9px rgba(0, 86, 179, 0.35);
+}
+
+.login-container button:hover {
+  background: #004091;
+  transform: translateY(-1px);
+}
+
+/* Error message */
+.login-container p {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.login-container p.error {
+  color: #b3261e;
+}
+
+/* “Need an account?” link text */
+.login-container p:last-of-type {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.login-container a {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
