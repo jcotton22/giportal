@@ -191,8 +191,3 @@ SECURE_BROWSER_XSS_FILTER = True
 # Use HTTPS in production:
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
-
-# Optional, once you know HTTPS is fully working:
-SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=not DEBUG)
-
-
