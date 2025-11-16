@@ -49,6 +49,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
