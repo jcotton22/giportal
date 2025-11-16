@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { auth } from "../apiClient";
 
+import "../styles/RegisterPage.css"
+
 export default function RegisterPage(){
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
