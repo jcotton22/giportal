@@ -21,18 +21,25 @@ export default function RegisterPage(){
 
   return (
     <div className="register-container">
-      <h3>Register</h3>
-      <form onSubmit={submit}>
-        <input
-          type="email"
-          placeholder="example@hospital.ca"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <button>Send activation e-mail</button>
-      </form>
-      {msg && <p>{msg}</p>}
+      <div className="register-card">
+        <h3>Register</h3>
+        <form onSubmit={submit}>
+          <input
+            type="email"
+            placeholder="example@hospital.ca"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <button>Send activation e-mail</button>
+        </form>
+
+        {msg && (
+          <p className={msg.includes("Error") ? "error" : "success"}>
+            {msg}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
