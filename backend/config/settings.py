@@ -141,13 +141,14 @@ MODEL3D_ROOT = MEDIA_ROOT / '3d_models'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CORS
 CORS_ALLOWED_ORIGINS = [
-    o.strip()
-    for o in env(
-        "CORS_ALLOWED_ORIGINS",
-        default="http://localhost:5173,http://127.0.0.1:5173"
-    ).split(",")
-    if o.strip()
+    o.strip() for o in env("CORS_ALLOWED_ORIGINS", default="").split(",") if o.strip()
+]
+
+# CSRF
+CSRF_TRUSTED_ORIGINS = [
+    o.strip() for o in env("CSRF_TRUSTED_ORIGINS", default="").split(",") if o.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
 
