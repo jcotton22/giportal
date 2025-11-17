@@ -1,0 +1,105 @@
+/* === Page container (full center) === */
+.register-container {
+  min-height: calc(100vh - 80px); /* room for navbar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #f5f7fb 0%, #eef1f7 40%, #ffffff 100%);
+}
+
+/* Card */
+.register-container > div,
+.register-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;  /* smaller */
+  max-width: 360px;         /* slightly smaller card */
+  width: 100%;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* center all inner content */
+}
+
+/* Heading */
+.register-container h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Form layout */
+.register-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;  /* tighter */
+  align-items: center;
+}
+
+/* Input */
+.register-container input[type="email"] {
+  width: 100%;
+  padding: 0.55rem 0.7rem;  /* smaller */
+  border-radius: 8px;
+  border: 1px solid #d0d5e4;
+  font-size: 0.9rem;
+  background: #f9fafc;
+  transition: 0.2s ease;
+}
+
+.register-container input[type="email"]:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.15);
+  background: #ffffff;
+}
+
+/* ===== Small Button ===== */
+.register-container button {
+  margin-top: 0.25rem;
+  padding: 0.45rem 0.9rem;   /* MUCH smaller */
+  border-radius: 999px;
+  border: none;
+  font-size: 0.85rem;        /* smaller text */
+  font-weight: 600;
+  background: #0056b3;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  box-shadow: 0 2px 6px rgba(0, 86, 179, 0.25);  /* softer */
+}
+
+.register-container button:hover {
+  background: #004091;
+  transform: translateY(-1px);
+}
+
+/* Message output */
+.register-container p {
+  margin-top: 0.7rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.register-container p.error {
+  color: #b3261e;
+}
+
+.register-container p.success {
+  color: #006c2c;
+}
+
+/* Links (future-proof) */
+.register-container a {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-container a:hover {
+  text-decoration: underline;
+}

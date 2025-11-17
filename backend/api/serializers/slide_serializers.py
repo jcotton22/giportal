@@ -1,6 +1,6 @@
 from rest_framework import serializers
-
 from api.models import SlideModel
+import os
 
 
 class SlideModelSerializer(serializers.ModelSerializer):
@@ -8,14 +8,14 @@ class SlideModelSerializer(serializers.ModelSerializer):
     thumbnail_url = serializers.SerializerMethodField()
     dzi_xml_url   = serializers.SerializerMethodField()
     dzi_tiles_url = serializers.SerializerMethodField()
-    svs_file_url  = serializers.SerializerMethodField()
+    svs_file_url  = serializers.SerializerMethodField()  # now more of a “descriptor”
 
     class Meta:
         model = SlideModel
         fields = (
             "id",
             "question",
-            "svs_file",
+            "svs_file",  
             # optional: include raw stored paths as well
             "thumbnail_path",
             "dzi_xml_path",
@@ -62,6 +62,16 @@ class SlideModelSerializer(serializers.ModelSerializer):
         return self._abs_url(obj.dzi_tiles_url)
 
     def get_svs_file_url(self, obj) -> str:
+        """
+        Since svs_file is now a FilePathField pointing to a file
+        outside MEDIA_ROOT (uploaded via SSH), there is no public URL.
+
+        We can either:
+        - return an empty string, or
+        - return something descriptive like the basename.
+        """
         if not obj.svs_file:
             return ""
-        return self._abs_url(obj.svs_file.url)
+        # If you want *no* exposure at all, just `return ""` here.
+        # For now, expose just the filename (not the full path):
+        return os.path.basename(obj.svs_file)

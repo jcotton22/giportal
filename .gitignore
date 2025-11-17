@@ -30,4 +30,13 @@ frontend/build/
 
 # VSCode / IDE
 .vscode/
-.idea/
+.idea/.DS_Store
+backend/svs_slides/
+*.svs
+backend/db.sqlite3
+.env
+.DS_Store
+backend/svs_slides/
+*.svs
+backend/db.sqlite3
+.env
