@@ -17,11 +17,16 @@ env = environ.Env(
 # Load .env ONLY — never commit .env to Git
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-DEBUG = env("DEBUG")
+DEBUG = env.bool("DEBUG", default=True)
 
-SECRET_KEY = env("SECRET_KEY")
-if not SECRET_KEY and not DEBUG:
-    raise RuntimeError("SECRET_KEY must be set in production.")
+if DEBUG:
+    # Safe-ish default for local dev only
+    SECRET_KEY = env(
+        "SECRET_KEY",
+        default="dev-secret-key-change-me"
+    )
+else:
+    SECRET_KEY = env("SECRET_KEY")  # must be set in prod
 
 ALLOWED_HOSTS = [
     h.strip() for h in env("ALLOWED_HOSTS", default="127.0.0.1,localhost").split(",")
@@ -162,13 +167,29 @@ SVS_SLIDE_ROOT = env(
 # ==============================
 # API / AUTH / CORS
 # ==============================
-CORS_ALLOWED_ORIGINS = [
-    o.strip() for o in env("CORS_ALLOWED_ORIGINS", default="").split(",") if o.strip()
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    o.strip() for o in env("CSRF_TRUSTED_ORIGINS", default="").split(",") if o.strip()
-]
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+    CSRF_TRUSTED_ORIGINS = []
+else:
+    CORS_ALLOWED_ORIGINS = [
+        o.strip()
+        for o in env(
+            "CORS_ALLOWED_ORIGINS",
+            default="https://giportal.ca"
+        ).split(",")
+        if o.strip()
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        o.strip()
+        for o in env(
+            "CSRF_TRUSTED_ORIGINS",
+            default="https://giportal.ca"
+        ).split(",")
+        if o.strip()
+    ]
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -212,8 +233,23 @@ SIMPLE_JWT = {
 # SECURITY
 # ==============================
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+
+# Only enforce HSTS / redirects in production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = False  # flip to True if you want preload later
+    SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+    X_FRAME_OPTIONS = "SAMEORIGIN"
+else:
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+    SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
+    X_FRAME_OPTIONS = "SAMEORIGIN"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
