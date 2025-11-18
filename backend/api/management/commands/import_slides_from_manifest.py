@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from api.models.slide import SlideModel
+from api.models.slides import SlideModel
 from api.models.question import QuestionModel
 from django.utils.text import slugify
 
