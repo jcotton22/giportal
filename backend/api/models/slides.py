@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.utils.text import slugify
 
 from .question import QuestionModel
 
@@ -15,19 +16,37 @@ class SlideModel(models.Model):
         related_name="files",
     )
 
-    # SSH-uploaded slides live under settings.SVS_SLIDE_ROOT
-    svs_file = models.FilePathField(
-        path=settings.SVS_SLIDE_ROOT,
-        match=r".*\.[Ss][Vv][Ss]$",
-        recursive=True,
-        allow_files=True,
-        allow_folders=False,
-        max_length=500,
+    accession_no = models.CharField(max_length=20, help_text='APL Accession Number')
+    slide_no = models.CharField(max_length=10)
+
+    stem = models.SlugField(
+        max_length=255,
+        editable=False,
+        blank=True,
+        help_text="Auto generated identifier from acccession number"
     )
+
+    description = models.TextField()
 
     thumbnail_path = models.CharField(max_length=255, blank=True, default="")
     dzi_xml_path   = models.CharField(max_length=255, blank=True, default="")
     dzi_tiles_path = models.CharField(max_length=255, blank=True, default="")
+
+    def save(self, *args, **kwargs):
+        """
+            Make Accession number and slide number the canonical identity of the slide
+            All file paths being derived from slugified description
+        """
+
+        new_stem = slugify(self.accession_no + self.slide_no)
+
+        if not self.stem or self.stem != new_stem:
+            self.stem = new_stem
+            self.thumbnail_path = f"thumbnails/{self.stem}.jpeg"
+            self.dzi_xml_path = f"dzi/{self.stem}.dzi"
+            self.dzi_tiles_path = f"dzi/{self.stem}_files"
+
+        super().save(*args, **kwargs)
 
     @property
     def thumbnail_url(self) -> str:
@@ -44,15 +63,6 @@ class SlideModel(models.Model):
         p = self.dzi_tiles_path
         return default_storage.url(p) if p and default_storage.exists(p) else ""
 
-    @property
-    def svs_abs_path(self) -> str:
-        """
-        Absolute filesystem path to the SVS file.
-
-        For FilePathField this will usually already be absolute, but this
-        keeps it robust if you ever store relative paths.
-        """
-        p = self.svs_file or ""
-        if os.path.isabs(p):
-            return p
-        return os.path.join(settings.SVS_SLIDE_ROOT, p)
+    def __str__(self):
+        return f"{self.accession_no} + {self.slide_no}"
+    
