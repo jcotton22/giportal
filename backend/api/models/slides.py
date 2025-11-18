@@ -18,7 +18,7 @@ class SlideModel(models.Model):
     # SSH-uploaded slides live under settings.SVS_SLIDE_ROOT
     svs_file = models.FilePathField(
         path=settings.SVS_SLIDE_ROOT,
-        match=r".*\.svs$",
+        match=r".*\.[Ss][Vv][Ss]$",
         recursive=True,
         allow_files=True,
         allow_folders=False,
