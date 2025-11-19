@@ -8,7 +8,6 @@ class SlideModelSerializer(serializers.ModelSerializer):
     thumbnail_url = serializers.SerializerMethodField()
     dzi_xml_url   = serializers.SerializerMethodField()
     dzi_tiles_url = serializers.SerializerMethodField()
-    svs_file_url  = serializers.SerializerMethodField()  # now more of a “descriptor”
 
     class Meta:
         model = SlideModel
