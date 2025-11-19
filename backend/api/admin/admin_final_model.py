@@ -9,16 +9,11 @@ from api.models import FinalModel, QuestionModel, SlideModel
 # 1. Custom form to add a dropdown for existing slides
 # ---------------------------------------------------------------------
 class QuestionWithSlidesForm(forms.ModelForm):
-    """
-    Adds a multi-select field to attach existing SlideModel objects
-    to this Question by setting slide.question = this instance.
-    """
-
     existing_slides = forms.ModelMultipleChoiceField(
-        queryset=SlideModel.objects.all(),
+        queryset=SlideModel.objects.filter(question__isnull=True),
         required=False,
-        help_text="Attach one or more pre-imported slides to this question.",
-        widget=forms.SelectMultiple(attrs={"style": "width: 400px; height: 120px;"}),
+        label="Attach existing slides",
+        widget=forms.SelectMultiple(attrs={"style": "width:400px; height:150px"})
     )
 
     class Meta:
@@ -27,30 +22,44 @@ class QuestionWithSlidesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Prepopulate with any slides already linked to this question
+
+        # Pre-select slides already attached to this question
         if self.instance.pk:
-            self.fields["existing_slides"].initial = SlideModel.objects.filter(
-                question=self.instance
+            attached = SlideModel.objects.filter(question=self.instance)
+            available = SlideModel.objects.filter(
+                models.Q(question__isnull=True) | models.Q(question=self.instance)
             )
+            self.fields["existing_slides"].queryset = available
+            self.fields["existing_slides"].initial = attached
 
     def save(self, commit=True):
         instance = super().save(commit=commit)
 
-        if commit and "existing_slides" in self.cleaned_data:
-            slides = self.cleaned_data["existing_slides"]
+        if commit:
+            selected = self.cleaned_data["existing_slides"]
 
-            # Detach slides that are no longer selected
-            SlideModel.objects.filter(question=instance).exclude(pk__in=slides).update(
-                question=None
+            # Set selected slides → this question
+            SlideModel.objects.filter(pk__in=[s.pk for s in selected]).update(
+                question=instance
             )
 
-            # Attach all newly selected slides
-            for slide in slides:
-                if slide.question_id != instance.pk:
-                    slide.question = instance
-                    slide.save()
+            # Remove slides that were previously attached but unselected
+            SlideModel.objects.filter(question=instance).exclude(
+                pk__in=[s.pk for s in selected]
+            ).update(question=None)
 
-        return instance
+        return instanceclass QuestionModelInline(nested_admin.NestedStackedInline):
+    model = QuestionModel
+    form = QuestionWithSlidesForm
+    extra = 0
+
+    fields = (
+        "clinical_information",
+        "question",
+        "existing_slides",
+    )
+
+    inlines = [SlideModelInline]
 
 
 # ---------------------------------------------------------------------
