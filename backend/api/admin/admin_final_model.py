@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 import nested_admin
+from django.db import models
 
 from api.models import FinalModel, QuestionModel, SlideModel
 
@@ -48,7 +49,9 @@ class QuestionWithSlidesForm(forms.ModelForm):
                 pk__in=[s.pk for s in selected]
             ).update(question=None)
 
-        return instanceclass QuestionModelInline(nested_admin.NestedStackedInline):
+        return instance
+    
+class QuestionModelInline(nested_admin.NestedStackedInline):
     model = QuestionModel
     form = QuestionWithSlidesForm
     extra = 0
