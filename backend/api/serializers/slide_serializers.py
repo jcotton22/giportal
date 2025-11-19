@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from api.models import SlideModel
-import os
 
 
 class SlideModelSerializer(serializers.ModelSerializer):
-    # use model properties, but make them absolute URLs if request is present
+    # Computed URLs based on the model @property URLs,
+    # upgraded to absolute URLs if request is available.
     thumbnail_url = serializers.SerializerMethodField()
-    dzi_xml_url   = serializers.SerializerMethodField()
+    dzi_xml_url = serializers.SerializerMethodField()
     dzi_tiles_url = serializers.SerializerMethodField()
 
     class Meta:
@@ -18,7 +18,7 @@ class SlideModelSerializer(serializers.ModelSerializer):
             "slide_no",
             "stem",
             "description",
-            # optional: include raw stored paths as well
+            # stored relative paths
             "thumbnail_path",
             "dzi_xml_path",
             "dzi_tiles_path",
@@ -27,12 +27,30 @@ class SlideModelSerializer(serializers.ModelSerializer):
             "dzi_xml_url",
             "dzi_tiles_url",
         )
-        read_only_fields = (
-            "id",
-            "thumbnail_path",
-            "dzi_xml_path",
-            "dzi_tiles_path",
-            "thumbnail_url",
-            "dzi_xml_url",
-            "dzi_tiles_url",
-        )
+        # all of these are effectively read-only in the API
+        read_only_fields = fields
+
+    def get_thumbnail_url(self, obj):
+        """
+        Use the model's thumbnail_url property (which already checks storage),
+        but make it absolute if we have a request in context.
+        """
+        request = self.context.get("request")
+        url = obj.thumbnail_url  # model @property
+        if request and url:
+            return request.build_absolute_uri(url)
+        return url
+
+    def get_dzi_xml_url(self, obj):
+        request = self.context.get("request")
+        url = obj.dzi_xml_url
+        if request and url:
+            return request.build_absolute_uri(url)
+        return url
+
+    def get_dzi_tiles_url(self, obj):
+        request = self.context.get("request")
+        url = obj.dzi_tiles_url
+        if request and url:
+            return request.build_absolute_uri(url)
+        return url
