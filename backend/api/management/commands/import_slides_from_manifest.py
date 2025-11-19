@@ -48,8 +48,8 @@ class Command(BaseCommand):
         for idx, entry in enumerate(data, start=1):
             self.stdout.write(f"\n[{idx}] Processing entry: {entry}")
 
+            # ✅ Only require accession_no + slide_no
             try:
-                question_id = entry["question_id"]
                 accession_no = entry["accession_no"]
                 slide_no = entry["slide_no"]
                 description = entry.get("description", "").strip()
@@ -58,15 +58,18 @@ class Command(BaseCommand):
                 errors += 1
                 continue
 
-            # Lookup question
-            try:
-                question = QuestionModel.objects.get(pk=question_id)
-            except QuestionModel.DoesNotExist:
-                self.stderr.write(f"  ERROR: Question id {question_id} does not exist.")
-                errors += 1
-                continue
+            # OPTIONAL question_id
+            question = None
+            question_id = entry.get("question_id")
+            if question_id:
+                try:
+                    question = QuestionModel.objects.get(pk=question_id)
+                except QuestionModel.DoesNotExist:
+                    self.stderr.write(
+                        f"  WARNING: Question id {question_id} does not exist; importing slide unattached."
+                    )
 
-            # Compute stem as model does
+            # Compute stem the same way the model does
             base = f"{accession_no}-{slide_no}"
             stem = slugify(base)
 
@@ -93,18 +96,18 @@ class Command(BaseCommand):
                 skipped += 1
                 continue
 
+            # ✅ question may be None (SlideModel.question is nullable)
             slide, created_flag = SlideModel.objects.get_or_create(
                 question=question,
                 accession_no=accession_no,
                 slide_no=slide_no,
                 defaults={
-                    "description": description,
+                    "description": description or f"{accession_no} {slide_no}",
                 },
             )
 
-            # save() will recompute stem and paths, but we can call it to be safe
             slide.description = description or slide.description
-            slide.save()
+            slide.save()  # recompute stem + relative paths
 
             self.stdout.write(f"  {'Created' if created_flag else 'Updated'} SlideModel id={slide.id}")
             if created_flag:
