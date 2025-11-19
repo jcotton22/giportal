@@ -7,7 +7,7 @@ from api.models import FinalModel, QuestionModel, SlideModel
 
 
 # ---------------------------------------------------------------------
-# 1. Custom form to add a dropdown for existing slides
+# 1. Custom form to add dropdown for existing slides
 # ---------------------------------------------------------------------
 class QuestionWithSlidesForm(forms.ModelForm):
     existing_slides = forms.ModelMultipleChoiceField(
@@ -24,7 +24,6 @@ class QuestionWithSlidesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Pre-select slides already attached to this question
         if self.instance.pk:
             attached = SlideModel.objects.filter(question=self.instance)
             available = SlideModel.objects.filter(
@@ -39,39 +38,21 @@ class QuestionWithSlidesForm(forms.ModelForm):
         if commit:
             selected = self.cleaned_data["existing_slides"]
 
-            # Set selected slides → this question
             SlideModel.objects.filter(pk__in=[s.pk for s in selected]).update(
                 question=instance
             )
 
-            # Remove slides that were previously attached but unselected
             SlideModel.objects.filter(question=instance).exclude(
                 pk__in=[s.pk for s in selected]
             ).update(question=None)
 
         return instance
-    
-class QuestionModelInline(nested_admin.NestedStackedInline):
-    model = QuestionModel
-    form = QuestionWithSlidesForm
-    extra = 0
-
-    fields = (
-        "clinical_information",
-        "question",
-        "existing_slides",
-    )
-
-    inlines = [SlideModelInline]
 
 
 # ---------------------------------------------------------------------
 # 2. Inline for Slides (read-only view)
 # ---------------------------------------------------------------------
 class SlideModelInline(nested_admin.NestedStackedInline):
-    """
-    Inline under QuestionModel so you can view slides per question.
-    """
     model = SlideModel
     extra = 0
 
@@ -92,30 +73,24 @@ class SlideModelInline(nested_admin.NestedStackedInline):
 # 3. Inline for Questions (with dropdown for existing slides)
 # ---------------------------------------------------------------------
 class QuestionModelInline(nested_admin.NestedStackedInline):
-    """
-    Inline under FinalModel so you can add multiple questions per case.
-    Also lets you select existing slides from a dropdown.
-    """
     model = QuestionModel
     form = QuestionWithSlidesForm
     extra = 0
+
     fields = (
         "clinical_information",
         "question",
-        "existing_slides",   # dropdown multi-select
+        "existing_slides",
     )
-    inlines = [SlideModelInline]   # nested slides visible below each question
+
+    inlines = [SlideModelInline]
 
 
 # ---------------------------------------------------------------------
-# 4. Admin for SlideModel (standalone)
+# 4. Admin for SlideModel
 # ---------------------------------------------------------------------
 @admin.register(SlideModel)
 class SlideModelAdmin(admin.ModelAdmin):
-    """
-    Standalone Slide admin so you can see/import slides and attach them later
-    if needed.
-    """
     list_display = ("accession_no", "slide_no", "question")
     list_filter = ("accession_no", "question")
     search_fields = ("accession_no", "slide_no", "description")
@@ -123,7 +98,7 @@ class SlideModelAdmin(admin.ModelAdmin):
 
 
 # ---------------------------------------------------------------------
-# 5. Admin for FinalModel (top level)
+# 5. Admin for FinalModel (top-level)
 # ---------------------------------------------------------------------
 @admin.register(FinalModel)
 class FinalModelAdmin(nested_admin.NestedModelAdmin):
