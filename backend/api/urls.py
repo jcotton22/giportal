@@ -17,9 +17,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api.views import (
-    RegisterStartView,
-    RegisterCompleteView,
-    ChangePasswordView,
     FinalModelViewSet,
     QuestionModelViewSet,
     SlideModelViewSet,
@@ -38,13 +35,6 @@ urlpatterns = [
     # 🔐 JWT auth (matches apiClient.js)
     path("auth/login/",   TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("auth/refresh/", TokenRefreshView.as_view(),    name="token_refresh"),
-
-    # 📨 Registration & activation (match apiClient.js)
-    path("auth/register/", RegisterStartView.as_view(),   name="register-start"),
-    path("auth/activate/", RegisterCompleteView.as_view(), name="register-complete"),
-
-    # 🔑 Password change (already used like this in apiClient)
-    path("auth/change-password/", ChangePasswordView.as_view(), name="change-password"),
 
     # 📦 REST endpoints for your modules/questions/slides/lookups
     path("", include(router.urls)),

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_filters",
+    "accounts.apps.AccountsConfig",
     "api.apps.ApiConfig",
 ]
 
@@ -164,6 +165,7 @@ SVS_SLIDE_ROOT = env(
     default=str(BASE_DIR / "svs_slides")   # dev fallback
 )
 
+
 # ==============================
 # API / AUTH / CORS
 # ==============================
@@ -203,8 +205,9 @@ REST_FRAMEWORK = {
 }
 
 # ==============================
-# EMAIL
+# EMAIL & USER 
 # ==============================
+AUTH_USER_MODEL = "accounts.User"
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@example.com")
 EMAIL_HOST = env("EMAIL_HOST", default=None)
