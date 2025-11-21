@@ -1,26 +1,32 @@
 // src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../AuthContext";
+import api from "../api";
+
 
 import "../styles/Login.css"
 
 export default function Login() {
-  const { login } = useAuth();
   const nav = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
-    setMsg("");
+    setLoading(true);
+    console.log("Sumbit is pressed")
+
     try {
-      await login(username, password);
-      nav("/home");
+      const res = await api.post('/login/', { username, password })
+      console.log("We have a response ", res);
+
     } catch (err) {
-      setMsg(err.response?.data?.detail || "Login failed.");
+      setMsg.apply(err.response?.data?.detail || "Registration failed")
+      console.log("Error ", err)
     }
+    
   };
 
   return (
@@ -28,15 +34,15 @@ export default function Login() {
       <h3>Login</h3>
       <form onSubmit={submit}>
         <input
-          type="email"
-          placeholder="email@hospital.ca"
+          type="text"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
         <input
           type="password"
-          placeholder="••••••••"
+          placeholder="••••••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

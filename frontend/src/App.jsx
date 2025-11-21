@@ -1,25 +1,32 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./AuthContext";
-import ProtectedRoute from "./ProtectedRoute";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
-import RegisterPage from "./pages/RegisterPage";
-import ActivatePage from "./pages/ActivatePage";
+import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import ChangePassword from "./pages/ChangePassword";
 import Home from "./pages/Home";
 import Unknowns from "./pages/Unknowns";
 import ModuleDetails from "./pages/ModuleDetails";
 import SlideViewer from "./pages/SlideViewer"
+import Register from "./pages/Register";
+
+function Logout () {
+  localStorage.clear();
+  return <Navigate to ='/login' />
+}
+
+function RegisterAndLogout() {
+  localStorage.clear();
+  return <Register />
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/activate" element={<ActivatePage />} />
+          <Route path="/register" element={<RegisterAndLogout />} />
+          <Route path = "/logout" element = {<Logout />} />
           <Route
             path="/home"
             element={
@@ -33,14 +40,6 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Unknowns />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/change-password"
-            element={
-              <ProtectedRoute>
-                <ChangePassword />
               </ProtectedRoute>
             }
           />
@@ -60,9 +59,8 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-      </AuthProvider>
     </BrowserRouter>
   );
 }
